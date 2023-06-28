@@ -13,7 +13,7 @@ import subprocess
 def main():
 
     description = """
-dgeapy: Differential Gene Expression Analyisis at different levels.
+dgeapy: Differential Gene Expression Analyisis in Python at different levels.
 
 usage: dgeapy.py <command> [options]
 

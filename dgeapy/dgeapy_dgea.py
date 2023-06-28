@@ -1,15 +1,27 @@
 #!/usr/bin/env python3
 
 """
-Description
+Perform Differential Gene Expression Analysis (DGEA) by determining the
+differentially expressed genes from a dataframe. It takes as input a table
+in CSV, TSV, or XLSX format containing gene expression data. The script
+applies thresholds for adjusted p-values and fold changes to identify
+significant gene expression changes.
+
+Generates bar plots and volcano plots to visualize the results.
+
+The output includes the modified dataframe with added columns for fold
+change and gene regulation, as well as the generated plots saved in the
+specified output directory.
 """
 
 import argparse
 import os
 import sys
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
 
 
 # Default column names
@@ -50,13 +62,9 @@ def add_fold_change_column(df, log2_fold_change_column_name, fold_change_column_
 
     df[fold_change_column_name] = np.power(2, abs(df[log2_fold_change_column_name]))
 
-    try:
-        column_names.insert(fold_change_column_position, fold_change_column_name)
-        return df.reindex(columns=column_names)
+    column_names.insert(fold_change_column_position, fold_change_column_name)
 
-    # Pandas will rise and error when trying to reindex form a list with duplicate labels
-    except ValueError:
-        return df
+    return df.reindex(columns=column_names)
 
 
 def add_regulation_column(df, log2_fold_change_column_name, regulation_column_name):
@@ -81,24 +89,189 @@ def add_regulation_column(df, log2_fold_change_column_name, regulation_column_na
     # Set the initial value of "regulation" column as "unaffected" for all genes
     df[regulation_column_name] = "unaffected"
 
-    df.loc[df[log2_fold_change_column_name] > 0, regulation_column_name] = "upregulated"
-    df.loc[df[log2_fold_change_column_name] < 0, regulation_column_name] = "downregulated"
+    df.loc[df[log2_fold_change_column_name] > 0, regulation_column_name] = "Upregulated"
+    df.loc[df[log2_fold_change_column_name] < 0, regulation_column_name] = "Downregulated"
 
 
-    try:
-        column_names.insert(regulation_column_position, regulation_column_name)
-        return df.reindex(columns=column_names)
+    column_names.insert(regulation_column_position, regulation_column_name)
 
-    # Pandas will rise and error when trying to reindex form a list with duplicate labels
-    except ValueError:
-        return df
+    return df.reindex(columns=column_names)
 
+
+def mk_bar_plot(data, output_directory, plot_formats):
+    """
+    Generate a bar plot with count and percentage annotations.
+
+    Parameters:
+        data (pandas.DataFrame): The data for creating the bar plot.
+        output_directory (str): The directory to save the generated plot.
+        plot_formats (list): A list of plot formats to save the plot in.
+
+    Returns:
+        None
+    """
+
+    plt.figure(figsize=(11,6))
+
+    count_plot = sns.countplot(
+                        data=data,
+                        y="significance",
+                        palette=("silver", "cornflowerblue", "indianred"),
+                        order=["No significant", "Downregulated", "Upregulated"],
+                        width=0.5,
+                        )
+
+    # Adding count and percentage to the barplot
+    total = len(data["significance"])  # Total count
+    for p in count_plot.patches:
+        count = p.get_width()  # Count of each category
+        percentage = (count / total) * 100  # Calculate percentage
+        count_plot.annotate(f"{count:.0f} ({percentage:.2f}%)", (count, p.get_y() + p.get_height() / 2), ha="left", va="center")
+
+    count_plot.spines["top"].set_visible(False)
+    count_plot.spines["right"].set_visible(False)
+
+    plt.xlabel("Differentality expressed genes", size=10)
+    plt.ylabel("", size=10)
+
+    fig = count_plot.get_figure()
+
+    for format in plot_formats:
+        plot_name = f"{output_directory}/barplot.{format}"
+        fig.savefig(plot_name, format=format, dpi=300)
+
+        if format == "png":
+            plot_name = f"{output_directory}/barplot_transparent-bg.{format}"
+            fig.savefig(plot_name, format=format, dpi=300, transparent=True)
+
+    plt.close()
+
+
+def mk_volcano_plot(
+        data,
+        log2_fold_change_column_name,
+        padj_column_name,
+        foldchange_threshold,
+        padj_threshold,
+        output_directory,
+        plot_formats
+        ):
+    """
+    Generate a volcano plot with specified thresholds.
+
+    Parameters:
+        data (pandas.DataFrame): The data for creating the volcano plot.
+        log2_fold_change_column_name (str): The column name for log2 fold change values.
+        padj_column_name (str): The column name for adjusted p-values.
+        foldchange_threshold (float): The threshold value for fold change.
+        padj_threshold (float): The threshold value for adjusted p-values.
+        output_directory (str): The directory to save the generated plot.
+        plot_formats (list): A list of plot formats to save the plot in.
+
+    Returns:
+        None
+    """
+
+    # Calculating the log2 threshold for FoldChange values
+    log2FoldChange_threshold = np.log2(foldchange_threshold)
+    # Same for -log10 threshold for padj values
+    log10_padj_threshold = -np.log10(padj_threshold)
+
+    # Adding -log10(padj) column to the dataframe
+    data["-log10(padj)"] = -np.log10(data[padj_column_name])
+
+    no_sig_count = np.in1d(data["significance"], "No significant").sum()
+    up_count = np.in1d(data["significance"], "Upregulated").sum()
+    down_count = np.in1d(data["significance"], "Downregulated").sum()
+
+    # I just think it looks better with the counts on the legend
+    no_sig_newname = f"No significant ({no_sig_count})"
+    up_newname = f"Upregulated ({up_count})"
+    down_newname = f"Downregulated ({down_count})"
+
+
+    data["significance"] = data["significance"].map({
+        "No significant": no_sig_newname,
+        "Upregulated": up_newname,
+        "Downregulated": down_newname,
+        })
+
+    plt.figure(figsize=(6,7))
+
+    # Creating the plot
+    volcano = sns.scatterplot(
+            data=data,
+            s=15,
+            linewidth=0.2,
+            x=log2_fold_change_column_name,
+            y="-log10(padj)",
+            hue="significance",
+            hue_order=[down_newname, no_sig_newname, up_newname],
+            palette=("cornflowerblue", "silver", "indianred"),
+            )
+
+    # Add lines that will better ilustrate the choosen thresholds:
+    # zorder: add to the bottom (all other elements will be added in front)
+    # c is for color
+    # lw is for line with
+    # ls is for line simbol
+    volcano.axhline(log10_padj_threshold, zorder=0, c="grey", lw=1, ls="-." )
+    volcano.axvline(log2FoldChange_threshold, zorder=0, c="grey",lw=1,ls="-.")
+    volcano.axvline(-log2FoldChange_threshold, zorder=0, c="grey",lw=1,ls="-.")
+
+
+    # The following two lines remove the top and right borders of the plot.
+    volcano.spines["top"].set_visible(False)
+    volcano.spines["right"].set_visible(False)
+
+    # Creating the legend title.
+    legend_title = (
+            "Adjusted p-value < "
+            + str(padj_threshold)
+            + "\nFold Change >= |"
+            + str(foldchange_threshold)
+            + "|"
+            )
+    volcano.legend(title=legend_title)
+
+    # Label for x axis
+    plt.xlabel("$log_{2}$ Fold change", size=12)
+    # Label for y axis
+    plt.ylabel("-$log_{10}$ Adjusted p-value", size=12)
+
+    # Set x-axis limits symmetrically around 0
+    x_lims = volcano.get_xlim()
+    max_abs_x = max(abs(x_lims[0]), abs(x_lims[1]))
+    volcano.set_xlim(-max_abs_x, max_abs_x)
+
+
+    fig = volcano.get_figure()
+
+    # Create the same plot in each specificed format.
+    for format in plot_formats:
+        plot_name = f"{output_directory}/volcano.{format}"
+        fig.savefig(plot_name, format=format, dpi=300)
+
+        if format == "png":
+            plot_name = f"{output_directory}/_volcano_transparent-bg.{format}"
+            fig.savefig(plot_name, format=format, dpi=300, transparent=True)
+
+    plt.close()
 
 def main():
 
     description = """
-    Differential Gene Expression Analysis. Determine the differentially expressed 
-    genes from a dataframe.
+    Perform Differential Gene Expression Analysis (DGEA) by determining the
+    differentially expressed genes from a dataframe. It takes as input a table
+    in CSV, TSV, or XLSX format containing gene expression data. The script
+    applies thresholds for adjusted p-values and fold changes to identify
+    significant gene expression changes.
+
+    Generates bar plots and volcano plots to visualize the results.\n
+
+    The output includes the modified dataframe with added columns for fold
+    change and gene regulation, as well as the generated plots saved in the
+    specified output directory.
     """
 
     parser = argparse.ArgumentParser(
@@ -289,8 +462,8 @@ def main():
             & (abs(df[fold_change_column_name]) >= fold_change_threshold)
             ]
 
-    upregulated_genes_df = diff_expressed_genes_df[diff_expressed_genes_df[regulation_column_name] == "upregulated"]
-    downregulated_genes_df = diff_expressed_genes_df[diff_expressed_genes_df[regulation_column_name] == "downregulated"]
+    upregulated_genes_df = diff_expressed_genes_df[diff_expressed_genes_df[regulation_column_name] == "Upregulated"]
+    downregulated_genes_df = diff_expressed_genes_df[diff_expressed_genes_df[regulation_column_name] == "Downregulated"]
 
     if not os.path.isdir(output_directory):
         os.mkdir(output_directory)
@@ -303,6 +476,24 @@ def main():
     upregulated_genes_df.to_excel(f"{output_directory}/upregulated.xlsx")
     downregulated_genes_df.to_excel(f"{output_directory}/downregulated.xlsx")
 
+    # Preparing values for data representation
+    df["significance"] = np.where(df.index.isin(diff_expressed_genes_df.index), "Significant", "No significant")
+    df.loc[df["significance"] == "Significant", "significance"] = df[regulation_column_name]
+
+    fig_directory = output_directory + "/fig"
+    if not os.path.isdir(fig_directory):
+        os.mkdir(fig_directory)
+
+    mk_bar_plot(df, fig_directory, plot_formats)
+    mk_volcano_plot(
+            data=df,
+            log2_fold_change_column_name=log2_fold_change_column_name,
+            padj_column_name=padj_column_name,
+            foldchange_threshold=fold_change_threshold,
+            padj_threshold=padj_threshold,
+            output_directory=fig_directory,
+            plot_formats=plot_formats,
+            )
 
 if __name__ == "__main__":
     main()
