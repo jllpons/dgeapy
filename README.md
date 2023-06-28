@@ -47,10 +47,12 @@ usage: dgeapy.py <command> [options]
 ./dgeapy.py dgea -h
 usage: dgeapy.py dgea TABLE [options]
 
-Perform Differential Gene Expression Analysis (DGEA) by determining the differentially expressed genes from a dataframe. It takes as input a table in CSV, TSV, or XLSX
-format containing gene expression data. The script applies thresholds for adjusted p-values and fold changes to identify significant gene expression changes. Generates bar
-plots and volcano plots to visualize the results. The output includes the modified dataframe with added columns for fold change and gene regulation, as well as the generated
-plots saved in the specified output directory.
+Perform Differential Gene Expression Analysis (DGEA) by determining the differentially expressed
+genes from a dataframe. It takes as input a table in CSV, TSV, or XLSX format containing gene
+expression data. The script applies thresholds for adjusted p-values and fold changes to
+identify significant gene expression changes. Generates bar plots and volcano plots to visualize
+the results. The output includes the modified dataframe with added columns for fold change and
+gene regulation, as well as the generated plots saved in the specified output directory.
 
 positional arguments:
   TABLE                 path to the CSV, TSV or XLSX file
