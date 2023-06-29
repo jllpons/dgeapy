@@ -4,7 +4,7 @@ dgeapy.py is a set of tools that try to analyze RNAseq data at different levels.
 
 Available scripts are:
 
-- [dgeapy dgea](#dgeapy.py-dgea) 
+- [dgeapy.py dgea](#dgeapy-dgea) 
 
 ## Dependencies
 
@@ -41,7 +41,7 @@ usage: dgeapy.py <command> [options]
         -h, --help
 ```
 
-### dgeapy.py dgea
+### dgeapy dgea
 
 Determine the differentially expressed genes from a dataframe.
 
@@ -91,7 +91,7 @@ optional arguments:
 ./dgeapy/dgeapy.py dgea example/data/dgeapy_dgea_example.xlsx -o example/dgeapy_output --log2fc-column log2FoldChange --nan-values NA
 ```
 
-Tables and figures in `example/dgeapy_output`.
+Output tables and figures can be found in `example/dgeapy_output`.
 
 ![**Figure 1**: Bar plot generated using the exmple data.](example/dgeapy_output/fig/barplot.png)
 
