@@ -202,7 +202,7 @@ def mk_volcano_plot(
     volcano = sns.scatterplot(
             data=data,
             s=15,
-            linewidth=0.2,
+            linewidth=0.1,
             x=log2_fold_change_column_name,
             y="-log10(padj)",
             hue="significance",
@@ -257,6 +257,7 @@ def mk_volcano_plot(
             fig.savefig(plot_name, format=format, dpi=300, transparent=True)
 
     plt.close()
+
 
 def main():
 
@@ -472,7 +473,7 @@ def main():
     upregulated_genes_df.to_csv(f"{output_directory}/upregulated.tsv", sep="\t")
     downregulated_genes_df.to_csv(f"{output_directory}/downregulated.tsv", sep="\t")
 
-    diff_expressed_genes_df.to_excel(f"{output_directory}/DEG.xlsx")
+    diff_expressed_genes_df.to_excel(f"{output_directory}/deg.xlsx")
     upregulated_genes_df.to_excel(f"{output_directory}/upregulated.xlsx")
     downregulated_genes_df.to_excel(f"{output_directory}/downregulated.xlsx")
 
@@ -497,4 +498,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
