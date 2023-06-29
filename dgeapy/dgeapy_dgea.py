@@ -253,7 +253,7 @@ def mk_volcano_plot(
         fig.savefig(plot_name, format=format, dpi=300)
 
         if format == "png":
-            plot_name = f"{output_directory}/_volcano_transparent-bg.{format}"
+            plot_name = f"{output_directory}/volcano_transparent-bg.{format}"
             fig.savefig(plot_name, format=format, dpi=300, transparent=True)
 
     plt.close()
