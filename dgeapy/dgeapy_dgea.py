@@ -131,7 +131,7 @@ def mk_bar_plot(data, output_directory, plot_formats):
     count_plot.spines["top"].set_visible(False)
     count_plot.spines["right"].set_visible(False)
 
-    plt.xlabel("Differentality expressed genes", size=10)
+    plt.xlabel("Differentially expressed genes", size=10)
     plt.ylabel("", size=10)
 
     fig = count_plot.get_figure()
