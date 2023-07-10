@@ -17,7 +17,9 @@ dgeapy: Differential Gene Expression Analyisis in Python at different levels.
 
 usage: dgeapy.py <command> [options]
 
-    dgea    differential gene expression analyisis
+    commands:
+        dgea            differential gene expression analyisis
+        intersections   find intersections between the indexes of n files
 
     options:
         -h, --help
@@ -36,6 +38,10 @@ usage: dgeapy.py <command> [options]
 
         elif cmd == 'dgea':
             subcmd = ['python', f'{dgeapy_path}/dgeapy_dgea.py',] + sys.argv[2:]
+            subprocess.run(subcmd)
+
+        elif cmd == 'intersections':
+            subcmd = ['python', f'{dgeapy_path}/dgeapy_intersections.py',] + sys.argv[2:]
             subprocess.run(subcmd)
 
         else:
