@@ -5,7 +5,7 @@ dgeapy.py is a set of tools that try to analyze RNAseq data at different levels.
 Available scripts are:
 
 - [dgeapy.py dgea](#dgeapy-dgea) 
-- [dgeapy.py intersections](#dgeapy_intersections)
+- [dgeapy.py intersections](#dgeapy-intersections)
 
 ## Dependencies
 
@@ -23,8 +23,8 @@ conda create --name dgeapy python=3.9
 - Data visualization:
     - [matplotlib](<https://pypi.org/project/matplotlib/>): low level manipulations
     - [seaborn](<https://pypi.org/project/seaborn/>): high level manipulations
-    - [matplotlib-venn)[]: Venn Diagram drawing
-    - [UpSetPlot](): UpSet Plot generation drawing
+    - [matplotlib-venn](<https://pypi.org/project/matplotlib-venn/>): Venn Diagram drawing
+    - [UpSetPlot](<https://pypi.org/project/UpSetPlot/>): UpSet Plot generation drawing
 
 ```shell
 pip install pandas numpy openpyxl matplotlib seaborn matplotlib-venn UpSetPlot
