@@ -32,14 +32,15 @@ pip install pandas numpy openpyxl matplotlib seaborn matplotlib-venn UpSetPlot
 ## Usage
 
 ```
-./dgeapy.py -h
+ ./dgeapy.py -h
 
 dgeapy: Differential Gene Expression Analyisis in Python at different levels.
 
 usage: dgeapy.py <command> [options]
 
-    dgea            differential gene expression analyisis
-    intersections   find intersections between the indexes of n files
+    commands:
+        dgea            differential gene expression analyisis
+        intersections   find intersections between the indexes of n files
 
     options:
         -h, --help
