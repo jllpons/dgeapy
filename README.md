@@ -21,6 +21,18 @@ Install all necessary libraries with Conda:
 conda install pandas numpy openpyxl matplotlib seaborn matplotlib-venn UpSetPlot
 ```
 
+#### Dependencies and their Roles
+
+- [pandas](<https://pypi.org/project/pandas/>): For dataframe analysis and manipulation.
+- [numpy](<https://pypi.org/project/numpy/>): Essential for numerical computing tasks.
+- [openpyxl](<https://pypi.org/project/openpyxl/>): Allows reading and writing Excel xlsx files.
+- [matplotlib](<https://pypi.org/project/matplotlib/>): Used for creating static, interactive, and animated visualizations in Python.
+- [seaborn](<https://pypi.org/project/seaborn/>): Based on matplotlib; provides a high-level interface for drawing attractive statistical graphics.
+- [matplotlib-venn](<https://pypi.org/project/matplotlib-venn/>): Useful for drawing Venn diagrams in Python.
+- [UpSetPlot](<https://pypi.org/project/UpSetPlot/>): A library for creating UpSet plots, ideal for visualizing intersecting sets.
+
+
+
 ## Usage
 
 Available scripts are:
@@ -91,7 +103,7 @@ Output tables and figures can be found in `example/analyze_output`.
 
 ![**Figure 2**: Volcano plot generated using the exmple data.](example/analyze_output/volcano.png)
 
-Example data can be downloaded at [GSE206442](<https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE206442&format=file&file=GSE206442%5FGIBERT%5F01%5Fnew%5Fannot%5Fwo%5Foutlier%5FSTAT%5Fvs%5FLOG%5Fresults%2Exlsx>).
+Example data can be downloaded from [GSE206442](<https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE206442&format=file&file=GSE206442%5FGIBERT%5F01%5Fnew%5Fannot%5Fwo%5Foutlier%5FSTAT%5Fvs%5FLOG%5Fresults%2Exlsx>).
 
 ### dgeapy intersect
 
