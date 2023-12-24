@@ -9,10 +9,10 @@ Available scripts are:
 
 ## Dependencies
 
-Python (>= 3.9)
+Python (>= 3.10)
 
 ```shell
-conda create --name dgeapy python=3.9
+conda create --name dgeapy python=3.10
 ```
 
 - Data analysis:
@@ -32,18 +32,19 @@ pip install pandas numpy openpyxl matplotlib seaborn matplotlib-venn UpSetPlot
 ## Usage
 
 ```
- ./dgeapy.py -h
+python dgeapy/dgeapy.py -h
 
-dgeapy: Differential Gene Expression Analyisis in Python at different levels.
+Differential Gene Expression Analyisis in Python at different levels.
 
-usage: dgeapy.py <command> [options]
+Usage: python dgeapy.py <COMMAND> [OPTIONS]
 
-    commands:
-        dgea            differential gene expression analyisis
-        intersections   find intersections between the indexes of n files
+Commands:
+    analyze           Perform differential gene expression analyisis
+    intersect         Find intersections between indexes of multiple files
 
-    options:
-        -h, --help
+Options:
+    -h, --help        Show this help message and exit
+    -v, --version     Show version number and exit
 ```
 
 ### dgeapy dgea
@@ -62,38 +63,34 @@ Determine the differentially expressed genes from a dataframe.
    and volcano plot (Fig. 2).
 
 ```
-./dgeapy.py dgea -h
-usage: dgeapy.py dgea TABLE [options]
+python dgeapy/dgeapy.py analyze -h
+usage: dgeapy.py analyze <TABLE> [OPTIONS]
 
-Perform Differential Gene Expression Analysis (DGEA) by determining the differentially expressed
-genes from a dataframe. It takes as input a table in CSV, TSV, or XLSX format containing gene
-expression data. The script applies thresholds for adjusted p-values and fold changes to
-identify significant gene expression changes. Generates bar plots and volcano plots to visualize
-the results. The output includes the modified dataframe with added columns for fold change and
-gene regulation, as well as the generated plots saved in the specified output directory.
+Differential Gene Expression Analysis.
+Generates tables with differentially expressed plots to visualize the results.
+
 
 positional arguments:
-  TABLE                 path to the CSV, TSV or XLSX file
+  <TABLE>                  Path to the gene expression data file (CSV, TSV, XLSX).
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -o STR, -output-directory STR
-                        output directory [Default: $CWD/dgeapy_output]
-  --padj FLOAT          adjusted p-value threshold. LESS THAN THRESHOLD WILL BE APPLIED [Default: 0.05]
-  --fc FLOAT            fold change threshold. ABSOLUTE VALUE EQUAL OR MORE THAN THRESHOLD WILL BE APPLIED [Default: 1.5]
-  --formats STR       plot formats [Default: ['png']]
-  --exclude STR       string pattern to match against indexes. Matched indexes are excluded
-  --nan-values STR    strings to recognize as NaN values. Transcripts with NaN padj or NaN fold change will be excluded [Default: ["", "--"]]
-  --keep-duplicated     if passed, keep duplicate index values [Default: False]
-  --index-column STR    name of the column that will be used as index [Default: index]
-  --log2fc-column STR   name of the column containing the log2 Fold Change values [Default: log2_fold_change]
-  --padj-column STR     name of the column containing the p-adjusted values [Default: padj]
+options:
+  -h, --help               show this help message and exit
+  -o, --output DIR         Specify the output directory (default: cwd).
+  -p, --padj FLOAT         Adjusted p-value threshold for significance (default: 0.05).
+  -f, --fold-change FLOAT  Fold change threshold for significance (default: 1.5).
+  -F, --formats [STR]      Output formats for plots (e.g. svg, pdf) (default: ['png']).
+  -e, --exclude [STR]      Exclude indexes matching specified patterns.
+  -N, --nan-values [STR]   Strings to recognize as NaN (default: ['', '--']).
+  -k, --keep-duplicated    Keep duplicated indexes (default: False).
+  -I, --index-column STR   Column name for index (default: index).
+  -L, --log2fc-column STR  Column name for log2 Fold Change (default: log2_fold_change).
+  -P, --p-column STR       Column name for adjusted p-values (default: padj).
 ```
 
 #### Usage example:
 
 ```shell
-./dgeapy/dgeapy.py dgea example/data/dgeapy_dgea_example.xlsx -o example/dgeapy_output --log2fc-column log2FoldChange --nan-values NA
+python dgeapy/dgeapy.py analyze example/data/dgeapy_dgea_example.xlsx -o example/dgeapy_output -L log2FoldChange -N NA
 ```
 
 Output tables and figures can be found in `example/dgeapy_output`.
