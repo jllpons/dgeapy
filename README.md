@@ -6,7 +6,7 @@ DGEAPY is a Python toolkit for analyzing RNAseq data, focusing on differential g
 
 ### Setting up the Environment
 
-Create a dedicated environment for DGEAPY using Conda:
+Create a dedicated environment for dgeapy using Conda:
 
 ```shell
 conda create --name dgeapy python=3.10
@@ -58,14 +58,8 @@ Options:
 
 Determine the differentially expressed genes from a dataframe.
 
-1. Input a table in CSV, TSV, or XLSX format.
-2. Verify and clean the data by checking for NaN values, duplicated values in the index, and excluding indexes with specific patterns using `--exclude`.
-3. Utilize `--index-column` to index each row and add fold change and regulation columns.
-4. **Identify differentially expressed genes (DEG)** by applying thresholds for p-adjusted value (`--padj`) and fold change absolute value (`--fc`).
-5. Output three table (DEGs, upregulated and downregulated) and two figures (a bar plot and a volcano plot).
-
 ```
-python dgeapy/dgeapy.py analyze -h
+$ python dgeapy/dgeapy.py analyze -h
 usage: dgeapy.py analyze <TABLE> [OPTIONS]
 
 Differential Gene Expression Analysis.
@@ -89,6 +83,14 @@ options:
   -P, --p-column STR       Column name for adjusted p-values (default: padj).
 ```
 
+In a nutshell:
+
+1. Input a table in CSV, TSV, or XLSX format.
+2. Verify and clean the data by checking for NaN values, duplicated values in the index, and excluding indexes with specific patterns using `--exclude`.
+3. Utilize `--index-column` to index each row and add fold change and regulation columns.
+4. **Identify differentially expressed genes (DEG)** by applying thresholds for p-adjusted value (`--padj`) and fold change absolute value (`--fc`).
+5. Output three table (DEGs, upregulated and downregulated) and two figures (a bar plot and a volcano plot).
+
 #### Usage example:
 
 ```shell
@@ -107,66 +109,59 @@ Example data can be downloaded from [GSE206442](<https://www.ncbi.nlm.nih.gov/ge
 
 Compute intersections of indexes among a list of dataframes.
 
-1. Takes multiple dataframes and their assigned name.
-2. Checks for any NaN values, null values or duplicaded values in the indexes.
-3. Excludes indexes that contain specific patterns provided with the `--exclude` argv.
-4. **Computes all of the possible intersections between the indexes of the provided dataframes.**
-5. Generates a TSV and a XLSX file for each non-empty intersection.
-6. Generates a weighted and an unweighted Venn Diagram if the n of provided
-   tables is 3 or less.
-7. Generates an UpSet Plot for a better visualitzation of the present and
-   missing intersections.
-
 ```
-./dgeapy/dgeapy.py intersections -h
-usage: dgeapy.py intersections <file1> <file2> <file3> ... name_1 name_2 name_3 ... [options]
+$ python dgeapy/dgeapy.py intersect -h
+usage: dgeapy.py intersections -f <file1> <file2> [...] -n <name1> <name2> [...] [OPTIONS]
 
-Given a list of data files, compute all the possible intersections between them.
-Then, generate two tables (TSV and XLSX) for each intersection. If the number of 
-data files is less than or equal to 3, generate Venn diagrams and an UpSet plot.
-If the number of data files is greater than 3, generate only an UpSet plot.
+Computes intersections between multiple data files and generates comprehensive intersection
+tables and visualizations.
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -f <file_1> <file_2> ... [<file_1> <file_2> ... ...], --files <file_1> <file_2> ... [<file_1> <file_2> ... ...]
-                        data files to be processed
-  -n <name_1> <name_2> ... [<name_1> <name_2> ... ...], --names <name_1> <name_2> ... [<name_1> <name_2> ... ...]
-                        names of the data files that will be used in the plots and tables
-  -o PATH, --output_directory PATH
-                        output directory [Default: $CWD/dgeapy_intersections_output]
-  -i STR, --index_column STR
-                        name of the index column
-  --formats STR [STR ...]
-                        output formats for the plots [Default: ['png', 'pdf']]
-  --nan-values STR [STR ...]
-                        strings to recognize as NaN values in index column Default: ['', '--', 'NA']
-  --exclude STR [STR ...]
-                        string patterns to exclude from the index column
+
+options:
+  -h, --help              show this help message and exit
+  -o, --output DIR        Specify the output directory for results (default: cwd).
+  -i, --index-column STR  Name of the index column in the data files (default: index).
+  -F, --formats [STR]     Output formats for the plots (e.g. svg) (default: ['png', 'pdf']).
+  -N, --nan-values [STR]  Strings to recognize as NaN (default: ['', '--', 'NA']).
+  -e, --exclude [STR]     Exclude indexes matching specified patterns.
+
+required arguments:
+  -f, --files [<FILE>]    Paths to the data files for intersection analysis.
+  -n, --names [STR]       Names for the data files to label plots and tables.
 ```
+
+Again:
+
+
+1. Input multiple dataframes along with their assigned names.
+2. Validate and prepare data by checking for NaN, null, or duplicated values in the indexes and exclude specific patterns using `--exclude`.
+3. **Compute all possible intersections between the indexes of the provided dataframes.**
+4. Generate TSV and XLSX files for each non-empty intersection to document results.
+5. Produce visual representations of intersections: automatically generate a weighted and unweighted Venn Diagram for up to three dataframes, or an UpSet Plot for larger sets to visualize the present and missing intersections.
 
 #### Usage example:
 
 Intersection analysis between 3 files:
 
 ```shell
-./dgeapy/dgeapy.py intersections -f test/dgeapy_intersections_test/data/set1-20.xlsx test/dgeapy_intersections_test/data/set4-23.xlsx test/dgeapy_intersections_test/data/set7-26.xlsx -n set-1-20 set-4-23 set-7-26 -o test/dgeapy_intersections_test/3_sets_test
+python dgeapy/dgeapy.py intersect -f example/data/condition1.xlsx -f example/data/condition2.xlsx -f example/data/condition3.xlsx -n "Condition 1" -n "Condition 2" -n "Condition 3" -o example/intersect3_output
 ```
-Results can be found in `test/dgeapy_intersections_test/3_sets_test`
+Results can be found in `example/intersect3_output`
 
 Example of a generated Venn Diagram: 
 
 ![**Figure 3**: Venn diagram using example
-data](test/dgeapy_intersections_test/3_sets_test/fig/venn3_unweighted.png)
+data](example/intersect3_output/venn3_unweighted.png)
 
 Intersection analysis between 4 files:
 
-Results can be found in `test/dgeapy_intersections_test/4_sets_test`
+```shell
+python dgeapy/dgeapy.py intersect -f example/data/condition1.xlsx -f example/data/condition2.xlsx -f example/data/condition3.xlsx -f example/data/condition5.xlsx -n "Condition 1" -n "Condition 2" -n "Condition 3" -n "Condition 4" -o example/intersect4_output
+```
+
+Results can be found in `example/intersect4_output`
 
 Example of a generated UpSet Plot:
 
 ![**Figure 4**: Venn diagram using example
-data](test/dgeapy_intersections_test/4_sets_test/fig/upset.png)
-
-```shell
-./dgeapy/dgeapy.py intersections -f test/dgeapy_intersections_test/data/set1-20.xlsx test/dgeapy_intersections_test/data/set4-23.xlsx test/dgeapy_intersections_test/data/set7-26.xlsx test/dgeapy_intersections_test/data/set16-35.xlsx -n set-1-20 set-4-23 set-7-26 set-16-35 -o test/dgeapy_intersections_test/4_sets_test
-```
+data](example/intersect4_output/upset.png)

@@ -10,21 +10,194 @@ diagrams and upset plots for data visualization.
 import argparse
 import os
 import sys
+from typing import Any
 
 import matplotlib.pyplot as plt
 from matplotlib_venn import venn2, venn2_unweighted, venn3, venn3_unweighted
 from upsetplot import from_contents, UpSet
 import pandas as pd
 
+from dgeapy_analyze import read_table
 
-# Defalut colum names
+
+__author__ = "Joan Lluis Pons Ramon"
+__email__ = "joanlluis@gmail.com"
+__license__ = "MIT"
+
+
+# Defalut values. Can be changed with command line arguments.
 defalut_index_column_name = "index"
 
-# Defalut plot formats
-defalut_plot_formats = ["png", "pdf"]
+defalut_plot_formats = ["png"]
 
 
-def obtain_all_possible_combinations(n):
+class Color:
+    """
+    Color class for terminal output.
+    """
+
+    GREEN = "\033[32m"
+    RED = "\033[31m"
+    YELLOW = "\033[33m"
+
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
+
+    RESET = "\033[0m"
+
+class TermMsg:
+    """
+    Templates for terminal messages.
+    """
+
+    ERROR = f"[dgeapy] {Color.RED}Error{Color.RESET}"
+    WARNING = f"[dgeapy] {Color.RED}Warning{Color.RESET}"
+    INFO = f"[dgeapy] {Color.GREEN}Info{Color.RESET}"
+
+
+# <https://stackoverflow.com/questions/18275023/dont-show-long-options-twice-in-print-help-from-argparse>
+# I have also added `argparse.RawTextHelpFormatter` to the inheritance
+# because I want to be able to use "\n" in the description and epilog.
+class CustomHelpFormatter(argparse.RawTextHelpFormatter, argparse.HelpFormatter):
+    def __init__(self, prog):
+        # Initialize with super from RawTextHelpFormatter and also set our custom widths
+        super().__init__(prog, max_help_position=40)
+
+    def _format_action_invocation(self, action):
+        if not action.option_strings or action.nargs == 0:
+            return super()._format_action_invocation(action)
+        default = self._get_default_metavar_for_optional(action)
+        args_string = self._format_args(action, default)
+        return ', '.join(action.option_strings) + ' ' + args_string
+
+
+def setup_parser() -> argparse.ArgumentParser:
+    """
+    Setup the argument parser.
+
+    Returns:
+    argparse.ArgumentParser: The argument parser.
+    """
+
+    fmt = lambda prog: CustomHelpFormatter(prog)
+
+    parser = argparse.ArgumentParser(
+            prog="dgeapy.py analyze",
+            formatter_class=fmt,
+            description="""
+Computes intersections between multiple data files and generates comprehensive intersection
+tables and visualizations.
+    """,
+    usage="dgeapy.py intersections -f <file1> <file2> [...] -n <name1> <name2> [...] [OPTIONS]",
+    epilog="""
+examples:
+    dgeapy.py intersections -f file1.csv file2.csv -n Experiment1 Experiment2 -o results_dir
+    dgeapy.py intersections -f file1.csv file2.csv file3.csv -n Exp1 Exp2 Exp3 --formats png
+
+For more information and documentation, visit <https://github.com/jllpons/dgeapy>
+    """,)
+
+    required = parser.add_argument_group("required arguments")
+    required.add_argument(
+            "-f", "--files",
+            metavar="<FILE>",
+            nargs="?",
+            default=[],
+            action="append",
+            type=str,
+            help="Paths to the data files for intersection analysis.",
+            )
+    required.add_argument(
+            "-n", "--names",
+            metavar="STR",
+            nargs="?",
+            default=[],
+            action="append",
+            type=str,
+            help="Names for the data files to label plots and tables.",
+            )
+
+    parser.add_argument(
+            "-o", "--output",
+            metavar="DIR",
+            default=f"{os.getcwd()}/dgeapy_intersections_output",
+            type=str,
+            help="Specify the output directory for results (default: cwd).",
+            )
+    parser.add_argument(
+            "-i", "--index-column",
+            metavar="STR",
+            default=defalut_index_column_name,
+            type=str,
+            help=f"Name of the index column in the data files (default: {defalut_index_column_name}).",
+            )
+    parser.add_argument(
+            "-F", "--formats",
+            metavar="STR",
+            nargs="?",
+            default=defalut_plot_formats,
+            type=str,
+            action="extend",
+            help=f"Output formats for the plots (e.g. svg) (default: {defalut_plot_formats}).",
+            )
+    parser.add_argument(
+            "-N", "--nan-values",
+            metavar="STR",
+            nargs="?",
+            default=["", "--", "NA"],
+            action="extend",
+            type=str,
+            help="Strings to recognize as NaN (default: ['', '--', 'NA']).",
+            )
+    parser.add_argument(
+            "-e", "--exclude",
+            metavar="STR",
+            nargs="?",
+            default=[],
+            action="extend",
+            type=str,
+            help="Exclude indexes matching specified patterns.",
+            )
+
+    return parser
+
+
+def check_args(args: argparse.Namespace) -> None | str:
+    """
+    Check if the arguments are valid.
+
+    Parameters:
+    args (argparse.Namespace): The arguments.
+
+    Returns:
+    None | str: None if the arguments are valid, otherwise an error message.
+    """
+
+    print(args.files)
+
+    if not args.files:
+        return f"{TermMsg.ERROR}: No files were provided"
+    elif len(args.files) < 2:
+        return f"{TermMsg.ERROR}: At least two files are required"
+
+    if not args.names:
+        return f"{TermMsg.ERROR}: No names were provided"
+    elif len(args.names) != len(args.files):
+        return f"{TermMsg.ERROR}: The number of names must match the number of files"
+
+    for f in args.files:
+        if not os.path.isfile(f):
+            return f"{TermMsg.ERROR}: Could not find {Color.YELLOW}{f}{Color.RESET}"
+
+    for frmt in args.formats:
+        if frmt not in ["png", "svg", "pdf", "jpg", "jpeg"]:
+            return (f"{TermMsg.ERROR}: Unsupported format {Color.YELLOW}{frmt}{Color.RESET}"
+                    + " (supported formats are png, svg, pdf, jpg and jpeg)")
+
+    return None
+
+
+def obtain_all_possible_combinations(n: int) -> list[str]:
     """
     Generate all possible combinations of 0s and 1s of length n. Excludes the combination of all 0s.
 
@@ -54,7 +227,7 @@ def obtain_all_possible_combinations(n):
     return combinations
 
 
-def obtain_intersctions(combinations, dfs):
+def obtain_intersctions(combinations: list[str], dfs: list[pd.DataFrame]) -> dict[str, set]:
     """
     Obtain the intersections of the indexes of the dataframes.
 
@@ -98,7 +271,7 @@ def obtain_intersctions(combinations, dfs):
     return intersections
 
 
-def generate_intersections_dfs(intersections, dfs_dict, index_column):
+def generate_intersections_dfs(intersections: dict[str, set], dfs_dict: dict[str, pd.DataFrame], index_column: str) -> dict[str, pd.DataFrame]:
     """
     Generate the dataframes for each intersection.
 
@@ -142,7 +315,7 @@ def generate_intersections_dfs(intersections, dfs_dict, index_column):
     return intersections_dfs
 
 
-def generate_venn2_diagrams(dfs_dict, output_directory, formats):
+def generate_venn2_diagrams(dfs_dict: dict[str, set], output_directory: str, formats: list[str]) -> None:
     """
     Generate the venn2 diagrams, one with the weights and one without.
 
@@ -178,7 +351,7 @@ def generate_venn2_diagrams(dfs_dict, output_directory, formats):
     plt.close()
 
 
-def generate_venn3_diagrams(dfs_set_dict, output_directory, formats):
+def generate_venn3_diagrams(dfs_set_dict: dict[str, set], output_directory: str, formats: list[str]) -> None:
     """
     Generate the venn3 diagrams, one with weights and one without.
 
@@ -214,7 +387,7 @@ def generate_venn3_diagrams(dfs_set_dict, output_directory, formats):
     plt.close()
 
 
-def generate_upset_plot(dfs_list_dict, output_directory, formats):
+def generate_upset_plot(dfs_list_dict: dict[str, list[Any]], output_directory: str, formats: list[str]) -> None:
     """
     Generate the upset plot.
 
@@ -250,197 +423,90 @@ def generate_upset_plot(dfs_list_dict, output_directory, formats):
 
 def main():
 
-    description = """
-    Given a list of data files, compute all the possible intersections between them.
-    Then, generate two tables (TSV and XLSX) for each intersection. If the number of
-    data files is less than or equal to 3, generate Venn diagrams and an UpSet plot.
-    If the number of data files is greater than 3, generate only an UpSet plot.
-    """
-
-    parser = argparse.ArgumentParser(
-            description=description,
-            usage="dgeapy.py intersections <file1> <file2> <file3> ... name_1 name_2 name_3 ... [options]",
-            )
-
-    parser.add_argument(
-            "-f", "--files",
-            metavar="<file_1> <file_2> ...",
-            nargs="+",
-            type=str,
-            help="data files to be processed",
-            )
-    parser.add_argument(
-            "-n", "--names",
-            metavar="<name_1> <name_2> ...",
-            nargs="+",
-            type=str,
-            help="names of the data files that will be used in the plots and tables",
-            )
-    parser.add_argument(
-            "-o", "--output_directory",
-            metavar="PATH",
-            default=f"{os.getcwd()}/dgeapy_intersections_output",
-            type=str,
-            help="output directory [Default: $CWD/dgeapy_intersections_output]",
-            )
-    parser.add_argument(
-            "-i", "--index_column",
-            metavar="STR",
-            default=defalut_index_column_name,
-            type=str,
-            help="name of the index column",
-            )
-    parser.add_argument(
-            "--formats",
-            metavar="STR",
-            nargs="+",
-            default=defalut_plot_formats,
-            type=str,
-            action="extend",
-            help=f"output formats for the plots [Default: {defalut_plot_formats}]",
-            )
-    parser.add_argument(
-            "--nan-values",
-            metavar="STR",
-            nargs="+",
-            default=["", "--", "NA"],
-            action="extend",
-            type=str,
-            help="strings to recognize as NaN values in index column Default: ['', '--', 'NA']",
-            )
-    parser.add_argument(
-            "--exclude",
-            metavar="STR",
-            nargs="+",
-            default=[],
-            action="extend",
-            type=str,
-            help="string patterns to exclude from the index column",
-            )
-
+    parser = setup_parser()
     args = parser.parse_args()
 
-    if not args.files:
-        parser.print_help()
-        sys.exit("\n** ERROR: No files were provided **")
+    error = check_args(args)
+    if error:
+        print(error, file=sys.stderr)
+        sys.exit(1)
 
-    if not args.names:
-        parser.print_help()
-        sys.exit("\n** ERROR: No names were provided **")
+    tables = []
+    for f in args.files:
+        table, error = read_table(f, args.nan_values)
+        if error:
+            print(error, file=sys.stderr)
+            sys.exit(1)
+        tables.append(table)
 
-    files = args.files
-    names = args.names
-    output_directory = args.output_directory
+    for idx, tbl in enumerate(tables):
+        if not tbl[tbl[args.index_column].isna()].empty:
+            print(f"{TermMsg.ERROR}: NaN values have been found in '{Color.YELLOW}{args.index_column}{Color.RESET}' column",
+                  file=sys.stderr)
+            sys.exit(1)
 
-    index_column = args.index_column
-    nan_values = args.nan_values
-    pattern_exclude = args.exclude
+        if not tbl[args.index_column].is_unique:
+            print(f"{TermMsg.ERROR}: Duplicated values have been found in '{Color.YELLOW}{args.index_column}{Color.RESET}' column"
+                  + f" from file '{Color.YELLOW}{args.files[idx]}{Color.RESET}'",
+                  file=sys.stderr)
+            sys.exit(1)
 
-    formats = args.formats
+        tbl.set_index(args.index_column, inplace=True)
 
-    dfs = []
-    for f in files:
-        if not os.path.isfile(f):
-            sys.exit(f"** ERROR: could not find {f} **")
+    if args.exclude:
+        for pattern in args.exclude:
+            for idx, tbl in enumerate(tables):
+                has_pattern = tbl.index.str.contains(pattern)
+                print(f"{TermMsg.INFO}: {Color.YELLOW}({has_pattern.sum()}{Color.RESET}) "
+                      + f"indexes matching pattern '{Color.YELLOW}{pattern}{Color.RESET}' have been excluded",
+                      file=sys.stderr)
+                tables[idx] = tbl[~has_pattern]
 
-        try:
+    n_files = len(tables)
 
-            if f.endswith(".csv"):
-                df = pd.read_csv(f, na_values=nan_values)
-                dfs.append(df)
-            elif f.endswith(".tsv"):
-                df = pd.read_csv(f, sep="\t", na_values=nan_values)
-                dfs.append(df)
-            elif f.endswith(".xlsx"):
-                df = pd.read_excel(f,  na_values=nan_values)
-                dfs.append(df)
-            else:
-                sys.exit(f"** ERROR: unsupported format for {f}. Supported formats "
-                         + "are CSV, TSV and XLSX **")
-        except:
-            sys.exit(f"** ERROR: could not read {f} **")
-
-    for i, df in enumerate(dfs):
-        if index_column not in df.columns.values.tolist():
-            print(df.columns.values.tolist())
-            sys.exit(f"** ERROR: could not find {index_column} in file_{i} **")
-        if not df[index_column].is_unique:
-            sys.exit(f"** ERROR: {index_column} contains duplicated values in file_{i} **")
-        if not df[df[index_column].isna()].empty:
-            sys.exit(f"** ERROR: {index_column} contains NaN values in file_{i} **")
-
-        df.set_index(index_column, inplace=True)
-
-    # Exclude patterns from index
-    if pattern_exclude:
-        new_dfs = []
-        for i, df in enumerate(dfs):
-            for pattern in pattern_exclude:
-                df = df[~df.index.str.contains(pattern)]
-            new_dfs.append(df)
-        dfs = new_dfs
-
-
-    n_files = len(dfs)
+    table_dict = {} # Will contain tables (for generating intersections tables)
+    venn_set_dict = {} # Will contain sets of indexes (for venn diagrams)
+    upset_list_dict = {} # Will contain lists of indexes (for upset plots)
+    for name, tbl in zip(args.names, tables):
+        table_dict[name] = tbl
+        venn_set_dict[name] = set(tbl.index.values.tolist())
+        upset_list_dict[name] = tbl.index.values.tolist()
 
     intersections = obtain_intersctions(
                         combinations=obtain_all_possible_combinations(n_files),
-                        dfs=dfs,
-                        )
-
-    # Dictionary of dataframes (for tables)
-    dfs_dict = {}
-    # Dictionary of sets of indexes (for venn diagram functions)
-    dfs_set_dict = {}
-    # Dictionary of lists of indexes (for upset plot function)
-    dfs_list_dict = {}
-    for name, df in zip(names, dfs):
-        dfs_dict[name] = df
-        dfs_set_dict[name] = set(df.index.values.tolist())
-        dfs_list_dict[name] = df.index.values.tolist()
+                        dfs=tables,)
 
     # Generating intersections dataframes
-    intersections_dfs = generate_intersections_dfs(intersections, dfs_dict, index_column)
-    if not os.path.isdir(output_directory):
-        os.mkdir(output_directory)
-    for key, value in intersections_dfs.items():
-        value.to_csv(f"{output_directory}/{key}.tsv", sep="\t")
-        value.to_excel(f"{output_directory}/{key}.xlsx")
+    intersections_dfs = generate_intersections_dfs(intersections, table_dict, args.index_column)
 
-    fig_output_directory = f"{output_directory}/fig"
-    if not os.path.isdir(fig_output_directory):
-        os.mkdir(fig_output_directory)
+    if not os.path.isdir(args.output):
+        os.mkdir(args.output)
+
+    for key, value in intersections_dfs.items():
+        key = key.replace(" ", "")
+        value.to_csv(f"{args.output}/{key}.tsv", sep="\t")
+        value.to_excel(f"{args.output}/{key}.xlsx")
 
     if n_files == 2:
-        generate_venn2_diagrams(
-                dfs_set_dict,
-                fig_output_directory,
-                formats,
-                )
-        generate_upset_plot(
-                dfs_list_dict,
-                fig_output_directory,
-                formats,
-                )
+        generate_venn2_diagrams(venn_set_dict,
+                                args.output,
+                                args.formats)
+        generate_upset_plot(upset_list_dict,
+                            args.output,
+                            args.formats)
 
     elif n_files == 3:
-        generate_venn3_diagrams(
-                dfs_set_dict,
-                fig_output_directory,
-                formats,
-                )
-        generate_upset_plot(
-                dfs_list_dict,
-                fig_output_directory,
-                formats,
-                )
+        generate_venn3_diagrams(venn_set_dict,
+                                args.output,
+                                args.formats)
+        generate_upset_plot(upset_list_dict,
+                            args.output,
+                            args.formats)
 
     else:
-        generate_upset_plot(
-                dfs_list_dict,
-                fig_output_directory,
-                formats,
-                )
+        generate_upset_plot(upset_list_dict,
+                            args.output,
+                            args.formats)
 
 
 if __name__ == "__main__":

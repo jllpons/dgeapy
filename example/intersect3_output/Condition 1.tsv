@@ -1,0 +1,4 @@
+index	log2_fold_change_Condition 1	padj_Condition 1	Regulation_Condition 1	Description_Condition 1
+gene_1	2.873435434066339	0.0787387186981866	Up	Does stuff
+gene_2	1.7009826898233267	0.05698233947550513	Down	Does stuff
+gene_3	0.7102763166100643	0.0494318212715654	Down	Does stuff

@@ -68,7 +68,7 @@ class Color:
 
 class TermMsg:
     """
-    Terminal messages.
+    Templates for terminal messages.
     """
 
     ERROR = f"[dgeapy] {Color.RED}Error{Color.RESET}"

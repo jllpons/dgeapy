@@ -1,0 +1,4 @@
+index	log2_fold_change_Condition 2	padj_Condition 2	Regulation_Condition 2	Description_Condition 2	log2_fold_change_Condition 3	padj_Condition 3	Regulation_Condition 3	Description_Condition 3	log2_fold_change_Condition 4	padj_Condition 4	Regulation_Condition 4	Description_Condition 4
+gene_21	2.75181268065958	0.0810167318015595	Up	Does stuff	2.75181268065958	0.0810167318015595	Up	Does stuff	2.75181268065958	0.0810167318015595	Up	Does stuff
+gene_22	2.85842490372024	0.0854233061647975	Up	Does stuff	2.85842490372024	0.0854233061647975	Up	Does stuff	2.85842490372024	0.0854233061647975	Up	Does stuff
+gene_23	2.9650371267809	0.0898298805280355	Up	Does stuff	2.9650371267809	0.0898298805280355	Up	Does stuff	2.9650371267809	0.0898298805280355	Up	Does stuff
