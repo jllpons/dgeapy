@@ -24,14 +24,12 @@ conda install pandas numpy openpyxl matplotlib seaborn matplotlib-venn UpSetPlot
 #### Dependencies and their Roles
 
 - [pandas](<https://pypi.org/project/pandas/>): For dataframe analysis and manipulation.
-- [numpy](<https://pypi.org/project/numpy/>): Essential for numerical computing tasks.
-- [openpyxl](<https://pypi.org/project/openpyxl/>): Allows reading and writing Excel xlsx files.
-- [matplotlib](<https://pypi.org/project/matplotlib/>): Used for creating static, interactive, and animated visualizations in Python.
-- [seaborn](<https://pypi.org/project/seaborn/>): Based on matplotlib; provides a high-level interface for drawing attractive statistical graphics.
-- [matplotlib-venn](<https://pypi.org/project/matplotlib-venn/>): Useful for drawing Venn diagrams in Python.
-- [UpSetPlot](<https://pypi.org/project/UpSetPlot/>): A library for creating UpSet plots, ideal for visualizing intersecting sets.
-
-
+- [numpy](<https://pypi.org/project/numpy/>): Numerical computing tasks.
+- [openpyxl](<https://pypi.org/project/openpyxl/>): Reading and writing Excel xlsx files.
+- [matplotlib](<https://pypi.org/project/matplotlib/>): Data visualization.
+- [seaborn](<https://pypi.org/project/seaborn/>): High-level manipulation of figures.
+- [matplotlib-venn](<https://pypi.org/project/matplotlib-venn/>): Venn diagrams.
+- [UpSetPlot](<https://pypi.org/project/UpSetPlot/>): UpSet plots.
 
 ## Usage
 
