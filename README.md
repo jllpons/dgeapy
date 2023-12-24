@@ -1,6 +1,6 @@
 # dgeapy: Differential Gene Expression Analysis in Python
 
-DGEAPY is a Python toolkit for analyzing RNAseq data, focusing on differential gene expression and intersections among datasets.
+`dgeapy.py` is a Python toolkit for analyzing RNAseq data, focusing on differential gene expression and intersections among datasets.
 
 ## Installation
 
