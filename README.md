@@ -15,7 +15,7 @@ conda activate dgeapy
 
 ### Installing Dependencies
 
-Install all necessary libraries with conda:
+Install all necessary libraries with Conda:
 
 ```shell
 conda install pandas numpy openpyxl matplotlib seaborn matplotlib-venn UpSetPlot
@@ -82,14 +82,14 @@ options:
 #### Usage example:
 
 ```shell
-python dgeapy/dgeapy.py analyze example/data/dgeapy_dgea_example.xlsx -o example/dgeapy_output -L log2FoldChange -N NA
+python dgeapy/dgeapy.py analyze example/data/dgeapy_dgea_example.xlsx -o example/analyze_output -L log2FoldChange -N NA
 ```
 
-Output tables and figures can be found in `example/dgeapy_output`.
+Output tables and figures can be found in `example/analyze_output`.
 
-![**Figure 1**: Bar plot generated using the exmple data.](example/dgeapy_output/fig/barplot.png)
+![**Figure 1**: Bar plot generated using the exmple data.](example/analyze_output/barplot.png)
 
-![**Figure 2**: Volcano plot generated using the exmple data.](example/dgeapy_output/fig/volcano.png)
+![**Figure 2**: Volcano plot generated using the exmple data.](example/analyze_output/volcano.png)
 
 Example data can be downloaded at [GSE206442](<https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE206442&format=file&file=GSE206442%5FGIBERT%5F01%5Fnew%5Fannot%5Fwo%5Foutlier%5FSTAT%5Fvs%5FLOG%5Fresults%2Exlsx>).
 
