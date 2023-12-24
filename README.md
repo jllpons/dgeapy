@@ -1,35 +1,32 @@
 # dgeapy: Differential Gene Expression Analysis in Python
 
-dgeapy.py is a set of tools that try to analyze RNAseq data at different levels.
+DGEAPY is a Python toolkit for analyzing RNAseq data, focusing on differential gene expression and intersections among datasets.
 
-Available scripts are:
+## Installation
 
-- [dgeapy.py dgea](#dgeapy-dgea) 
-- [dgeapy.py intersections](#dgeapy-intersections)
+### Setting up the Environment
 
-## Dependencies
-
-Python (>= 3.10)
+Create a dedicated environment for DGEAPY using Conda:
 
 ```shell
 conda create --name dgeapy python=3.10
+conda activate dgeapy
 ```
 
-- Data analysis:
-    - [pandas](<https://pypi.org/project/pandas/>): dataframe analysis and
-      manipulation
-    - [numpy](<https://pypi.org/project/numpy/>): computing
-    - [openpyxl](<https://pypi.org/project/openpyxl/>): engine for reading/writting xlsx files
-- Data visualization:
-    - [matplotlib](<https://pypi.org/project/matplotlib/>): low level manipulations
-    - [seaborn](<https://pypi.org/project/seaborn/>): high level manipulations
-    - [matplotlib-venn](<https://pypi.org/project/matplotlib-venn/>): Venn Diagram drawing
-    - [UpSetPlot](<https://pypi.org/project/UpSetPlot/>): UpSet Plot generation drawing
+### Installing Dependencies
+
+Install all necessary libraries with conda:
 
 ```shell
-pip install pandas numpy openpyxl matplotlib seaborn matplotlib-venn UpSetPlot
+conda install pandas numpy openpyxl matplotlib seaborn matplotlib-venn UpSetPlot
 ```
+
 ## Usage
+
+Available scripts are:
+
+- [dgeapy.py analyze](#dgeapy-analyze) 
+- [dgeapy.py intersect](#dgeapy-intersect)
 
 ```
 python dgeapy/dgeapy.py -h
@@ -47,20 +44,15 @@ Options:
     -v, --version     Show version number and exit
 ```
 
-### dgeapy dgea
+### dgeapy analyze
 
 Determine the differentially expressed genes from a dataframe.
 
-1. Takes a table in CSV, TSV or XLSX format as input.
-2. Checks for any NaN values in index, p-adjusted and log2 fold change columns.
-3. Indexes each row of the table according to `--index-colum`. 
-4. Checks for duplicated values in index.
-5. Excludes indexes that contain specific patterns provided with the `--exclude` arg.
-6. Adds fold change and regulation columns.
-7. **Determines the differentially expressed genes** (DEG). A gene is considered as DEG when it's p-adjusted value is less than the provided threshold in `--padj` and it's fold change absoulte value is equal or greater than the provided threshold in `--fc`.
-8. Creates an output directory `-o` where it stores a table containing the DEG `deg.table`, a table containing only the upregulated genes `upregulated.table` and another table containing the downregulated genes `downregulated.table` in both TSV and XLSX formats.
-9. Creates a `fig` directory inside the output directory containing a generated bar plot (Fig. 1)
-   and volcano plot (Fig. 2).
+1. Input a table in CSV, TSV, or XLSX format.
+2. Verify and clean the data by checking for NaN values, duplicated values in the index, and excluding indexes with specific patterns using `--exclude`.
+3. Utilize `--index-column` to index each row and add fold change and regulation columns.
+4. **Identify differentially expressed genes (DEG)** by applying thresholds for p-adjusted value (`--padj`) and fold change absolute value (`--fc`).
+5. Output three table (DEGs, upregulated and downregulated) and two figures (a bar plot and a volcano plot).
 
 ```
 python dgeapy/dgeapy.py analyze -h
@@ -101,7 +93,7 @@ Output tables and figures can be found in `example/dgeapy_output`.
 
 Example data can be downloaded at [GSE206442](<https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE206442&format=file&file=GSE206442%5FGIBERT%5F01%5Fnew%5Fannot%5Fwo%5Foutlier%5FSTAT%5Fvs%5FLOG%5Fresults%2Exlsx>).
 
-### dgeapy intersections
+### dgeapy intersect
 
 Compute intersections of indexes among a list of dataframes.
 
