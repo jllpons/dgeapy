@@ -88,9 +88,9 @@ options:
   -P, --p-column STR       Column name for adjusted p-values (default: padj).
 ```
 
-Script workflow:
+Script workflow summary:
 
-1. Input a table in CSV, TSV, or XLSX format.
+1. Take a table in CSV, TSV, or XLSX format.
 2. Verify and clean the data by checking for NaN values, duplicated values in the index, and excluding indexes with specific patterns using `--exclude`.
 3. Utilize `--index-column` to index each row and add fold change and regulation columns.
 4. **Identify differentially expressed genes (DEG)** by applying thresholds for p-adjusted value (`--padj`) and fold change absolute value (`--fc`).
@@ -135,10 +135,10 @@ required arguments:
   -n, --names [STR]       Names for the data files to label plots and tables.
 ```
 
-Script workflow:
+Script workflow summary:
 
-1. Input multiple dataframes along with their assigned names.
-2. Validate and prepare data by checking for NaN, null, or duplicated values in the indexes and exclude specific patterns using `--exclude`.
+1. Take multiple dataframes along with their assigned names.
+2. Validate and prepare data by checking for NaN, null, or duplicated values in the indexes, excluding specific patterns with `--exclude`.
 3. **Compute all possible intersections between the indexes of the provided dataframes.**
 4. Generate TSV and XLSX files for each non-empty intersection to document results.
 5. Produce visual representations of intersections: automatically generate a weighted and unweighted Venn Diagram for up to three dataframes, or an UpSet Plot for larger sets to visualize the present and missing intersections.
