@@ -99,7 +99,7 @@ Script workflow summary:
 #### Usage example:
 
 ```shell
-python dgeapy/dgeapy.py analyze example/data/dgeapy_dgea_example.xlsx -o example/analyze_output -L log2FoldChange -N NA
+python dgeapy/dgeapy.py analyze example/data/GSE206442.xlsx -o example/analyze_output -L log2FoldChange -N NA
 ```
 
 Output tables and figures can be found in `example/analyze_output`.
