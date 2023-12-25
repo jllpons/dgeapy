@@ -55,8 +55,8 @@ Options:
 
 Examples:
     python dgeapy.py analyze -h
-    python dgeapy/dgeapy.py analyze <mygenes.csv> -f 2.0 -p 0.01
-    python dgeapy/dgeapy.py intersect -f mutA.csv -f mutB.csv -n "Mutant A" -n "Mutant B" -i gene_id
+    python dgeapy.py analyze <mygenes.csv> -f 2.0 -p 0.01
+    python dgeapy.py intersect -f mutA.csv -f mutB.csv -n "Mutant A" -n "Mutant B" -i gene_id
 ```
 
 ### dgeapy analyze
@@ -88,7 +88,7 @@ options:
   -P, --p-column STR       Column name for adjusted p-values (default: padj).
 ```
 
-In a nutshell:
+Script workflow:
 
 1. Input a table in CSV, TSV, or XLSX format.
 2. Verify and clean the data by checking for NaN values, duplicated values in the index, and excluding indexes with specific patterns using `--exclude`.
@@ -135,8 +135,7 @@ required arguments:
   -n, --names [STR]       Names for the data files to label plots and tables.
 ```
 
-Again:
-
+Script workflow:
 
 1. Input multiple dataframes along with their assigned names.
 2. Validate and prepare data by checking for NaN, null, or duplicated values in the indexes and exclude specific patterns using `--exclude`.
