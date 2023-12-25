@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 """
-Perform Differential Gene Expression Analysis (DGEA) by identifying the
-differentially expressed genes from a dataframe. Takes as input a table
+Script : dgeapy_analyze.py
+Description: Perform Differential Gene Expression Analysis (DGEA) by identifying
+the differentially expressed genes from a dataframe. Takes as input a table
 in CSV, TSV, or XLSX format containing gene expression data. The script
 applies thresholds for adjusted p-values and fold changes to identify
 significant gene expression changes. Any  NaN values in the specified columns
@@ -17,9 +18,8 @@ directory including:
        and gene regulation.
     2. The generated plots. One bar plot and one volcano plot.
 
-Usage examples:
-    dgeapy.py analyze data.csv -o results_dir --padj 0.01 --fold-change 1.5
-    dgeapy.py analyze data.xlsx -F png --exclude 'GeneX' --nan-values 'NA'
+Author : Joan Lluis Pons Ramon
+Email : joanlluispons@gmail.com
 """
 
 import argparse
@@ -31,10 +31,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-
-__author__ = "Joan Lluis Pons Ramon"
-__email__ = "joanlluis@gmail.com"
-__license__ = "MIT"
+from dgeapy_utils import (__version__, __author__, __email__,
+                         Color, TermMsg, CustomHelpFormatter)
 
 
 # Default values. Can be changed with command line arguments.
@@ -50,46 +48,6 @@ defalut_padj_threshold = 0.05
 defalut_plot_formats = ["png"]
 
 defalut_nan_values = ["", "--"]
-
-
-class Color:
-    """
-    Color class for terminal output.
-    """
-
-    GREEN = "\033[32m"
-    RED = "\033[31m"
-    YELLOW = "\033[33m"
-
-    BOLD = "\033[1m"
-    UNDERLINE = "\033[4m"
-
-    RESET = "\033[0m"
-
-class TermMsg:
-    """
-    Templates for terminal messages.
-    """
-
-    ERROR = f"[dgeapy] {Color.RED}Error{Color.RESET}"
-    WARNING = f"[dgeapy] {Color.RED}Warning{Color.RESET}"
-    INFO = f"[dgeapy] {Color.GREEN}Info{Color.RESET}"
-
-
-# <https://stackoverflow.com/questions/18275023/dont-show-long-options-twice-in-print-help-from-argparse>
-# I have also added `argparse.RawTextHelpFormatter` to the inheritance
-# because I want to be able to use "\n" in the description and epilog.
-class CustomHelpFormatter(argparse.RawTextHelpFormatter, argparse.HelpFormatter):
-    def __init__(self, prog):
-        # Initialize with super from RawTextHelpFormatter and also set our custom widths
-        super().__init__(prog, max_help_position=40)
-
-    def _format_action_invocation(self, action):
-        if not action.option_strings or action.nargs == 0:
-            return super()._format_action_invocation(action)
-        default = self._get_default_metavar_for_optional(action)
-        args_string = self._format_args(action, default)
-        return ', '.join(action.option_strings) + ' ' + args_string
 
 
 def setup_parser() -> argparse.ArgumentParser:
@@ -123,7 +81,7 @@ For more information and documentation, visit <https://github.com/jllpons/dgeapy
     parser.add_argument(
             "-o", "--output",
             metavar="DIR",
-            default=f"{os.getcwd()}/dgeapy_output",
+            default=f"{os.getcwd()}/analyze_output",
             type=str,
             help="Specify the output directory (default: cwd).",
             )

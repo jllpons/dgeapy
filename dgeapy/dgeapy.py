@@ -12,12 +12,12 @@ import os
 import sys
 import subprocess
 
-
-__author__ = "Joan Lluis Pons Ramon"
-__version__ = "0.0.0"
+from dgeapy_utils import (__author__, __email__, __version__,
+                          Color, TermMsg)
 
 
 def main():
+
 
     description = """
 Differential Gene Expression Analyisis in Python at different levels.
@@ -30,11 +30,12 @@ Commands:
 
 Options:
     -h, --help        Show this help message and exit
-    -v, --version     Show version number and exit
+    -V, --version     Show version number and exit
 
 Examples:
     python dgeapy.py analyze -h
-    python dgeapy.py analyze --version
+    python dgeapy/dgeapy.py analyze <mygenes.csv> -f 2.0 -p 0.01
+    python dgeapy/dgeapy.py intersect -f mutA.csv -f mutB.csv -n "Mutant A" -n "Mutant B" -i gene_id
 
 For more information, see <https://github.com/jllpons/dgeapy>.
     """
@@ -42,7 +43,7 @@ For more information, see <https://github.com/jllpons/dgeapy>.
     arg_len = len(sys.argv)
     if arg_len == 1:
         print(description, file=sys.stderr)
-        print("error: no command was given.", file=sys.stderr)
+        print(f"{TermMsg.ERROR}: no command was given.", file=sys.stderr)
         sys.exit(1)
 
     elif arg_len > 1:
@@ -53,8 +54,8 @@ For more information, see <https://github.com/jllpons/dgeapy>.
             print(description, file=sys.stderr)
             sys.exit(0)
 
-        elif cmd == '-v' or cmd == '--version':
-            print(f"dgeapy version {__version__}", file=sys.stderr)
+        elif cmd == '-V' or cmd == '--version':
+            print(f"dgeapy version {Color.YELLOW}{__version__}{Color.RESET}", file=sys.stderr)
             sys.exit(0)
 
         elif cmd == 'analyze':
@@ -67,7 +68,7 @@ For more information, see <https://github.com/jllpons/dgeapy>.
 
         else:
             print(description, file=sys.stderr)
-            print(f"error: command '{cmd}' not found.", file=sys.stderr)
+            print(f"{TermMsg.ERROR}: command '{Color.YELLOW}{cmd}{Color.RESET}' not found.", file=sys.stderr)
             sys.exit(1)
 
 

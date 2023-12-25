@@ -51,7 +51,12 @@ Commands:
 
 Options:
     -h, --help        Show this help message and exit
-    -v, --version     Show version number and exit
+    -V, --version     Show version number and exit
+
+Examples:
+    python dgeapy.py analyze -h
+    python dgeapy/dgeapy.py analyze <mygenes.csv> -f 2.0 -p 0.01
+    python dgeapy/dgeapy.py intersect -f mutA.csv -f mutB.csv -n "Mutant A" -n "Mutant B" -i gene_id
 ```
 
 ### dgeapy analyze
@@ -111,7 +116,7 @@ Compute intersections of indexes among a list of dataframes.
 
 ```
 $ python dgeapy/dgeapy.py intersect -h
-usage: dgeapy.py intersections -f <file1> <file2> [...] -n <name1> <name2> [...] [OPTIONS]
+usage: dgeapy.py intersections -f <file1> -f <file2> [...] -n <name1> -n <name2> [...] [OPTIONS]
 
 Computes intersections between multiple data files and generates comprehensive intersection
 tables and visualizations.

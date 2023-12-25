@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 
 """
-Given a list of dataframes, compute all possible intersections of the indexes
-of the dataframes. Save one dataframe for each intersection and generate venn
-diagrams and upset plots for data visualization.
+Script: dgeapy_intersect.py
+Description: Given a list of dataframes, compute all possible intersections of
+the indexes of the dataframes. Save one dataframe for each intersection and
+generate venn diagrams and upset plots for data visualization.
+
+Author: Joan Lluis Pons Ramon
+Email: joanlluispons@gmail.com
 """
 
 
@@ -18,57 +22,14 @@ from upsetplot import from_contents, UpSet
 import pandas as pd
 
 from dgeapy_analyze import read_table
-
-
-__author__ = "Joan Lluis Pons Ramon"
-__email__ = "joanlluis@gmail.com"
-__license__ = "MIT"
+from dgeapy_utils import (__author__, __email__, __version__,
+                          Color, TermMsg, CustomHelpFormatter)
 
 
 # Defalut values. Can be changed with command line arguments.
 defalut_index_column_name = "index"
 
 defalut_plot_formats = ["png"]
-
-
-class Color:
-    """
-    Color class for terminal output.
-    """
-
-    GREEN = "\033[32m"
-    RED = "\033[31m"
-    YELLOW = "\033[33m"
-
-    BOLD = "\033[1m"
-    UNDERLINE = "\033[4m"
-
-    RESET = "\033[0m"
-
-class TermMsg:
-    """
-    Templates for terminal messages.
-    """
-
-    ERROR = f"[dgeapy] {Color.RED}Error{Color.RESET}"
-    WARNING = f"[dgeapy] {Color.RED}Warning{Color.RESET}"
-    INFO = f"[dgeapy] {Color.GREEN}Info{Color.RESET}"
-
-
-# <https://stackoverflow.com/questions/18275023/dont-show-long-options-twice-in-print-help-from-argparse>
-# I have also added `argparse.RawTextHelpFormatter` to the inheritance
-# because I want to be able to use "\n" in the description and epilog.
-class CustomHelpFormatter(argparse.RawTextHelpFormatter, argparse.HelpFormatter):
-    def __init__(self, prog):
-        # Initialize with super from RawTextHelpFormatter and also set our custom widths
-        super().__init__(prog, max_help_position=40)
-
-    def _format_action_invocation(self, action):
-        if not action.option_strings or action.nargs == 0:
-            return super()._format_action_invocation(action)
-        default = self._get_default_metavar_for_optional(action)
-        args_string = self._format_args(action, default)
-        return ', '.join(action.option_strings) + ' ' + args_string
 
 
 def setup_parser() -> argparse.ArgumentParser:
@@ -88,7 +49,7 @@ def setup_parser() -> argparse.ArgumentParser:
 Computes intersections between multiple data files and generates comprehensive intersection
 tables and visualizations.
     """,
-    usage="dgeapy.py intersections -f <file1> <file2> [...] -n <name1> <name2> [...] [OPTIONS]",
+    usage="dgeapy.py intersections -f <file1> -f <file2> [...] -n <name1> -n <name2> [...] [OPTIONS]",
     epilog="""
 examples:
     dgeapy.py intersections -f file1.csv file2.csv -n Experiment1 Experiment2 -o results_dir
@@ -120,7 +81,7 @@ For more information and documentation, visit <https://github.com/jllpons/dgeapy
     parser.add_argument(
             "-o", "--output",
             metavar="DIR",
-            default=f"{os.getcwd()}/dgeapy_intersections_output",
+            default=f"{os.getcwd()}/intersect_output",
             type=str,
             help="Specify the output directory for results (default: cwd).",
             )
