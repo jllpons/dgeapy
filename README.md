@@ -94,7 +94,7 @@ Script workflow:
 2. Verify and clean the data by checking for NaN values, duplicated values in the index, and excluding indexes with specific patterns using `--exclude`.
 3. Utilize `--index-column` to index each row and add fold change and regulation columns.
 4. **Identify differentially expressed genes (DEG)** by applying thresholds for p-adjusted value (`--padj`) and fold change absolute value (`--fc`).
-5. Output three table (DEGs, upregulated and downregulated) and two figures (a bar plot and a volcano plot).
+5. Output three tables (DEGs, upregulated and downregulated) and two figures (a bar plot and a volcano plot).
 
 #### Usage example:
 
