@@ -18,7 +18,6 @@ from dgeapy_utils import (__author__, __email__, __version__,
 
 def main():
 
-
     description = """
 Differential Gene Expression Analyisis in Python at different levels.
 
@@ -68,7 +67,7 @@ For more information, see <https://github.com/jllpons/dgeapy>.
 
         else:
             print(description, file=sys.stderr)
-            print(f"{TermMsg.ERROR}: command '{Color.YELLOW}{cmd}{Color.RESET}' not found.", file=sys.stderr)
+            print(f"{TermMsg.ERROR}: unrecognized command '{Color.YELLOW}{cmd}{Color.RESET}'.", file=sys.stderr)
             sys.exit(1)
 
 
