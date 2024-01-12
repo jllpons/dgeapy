@@ -357,15 +357,13 @@ def mk_bar_plot(data: pd.DataFrame,
 
     plt.figure(figsize=(11,6))
 
-    count_plot = sns.countplot(
-                        data=data,
-                        y="significance",
-                        hue="significance",
-                        palette=("silver", "cornflowerblue", "indianred"),
-                        hue_order=["No significant", "Downregulated", "Upregulated"],
-                        order=["Upregulated", "Downregulated", "No significant"],
-                        width=0.5,
-                        )
+    count_plot = sns.countplot(data=data,
+                               y="significance",
+                               hue="significance",
+                               palette=("silver", "cornflowerblue", "indianred"),
+                               hue_order=["No significant", "Downregulated", "Upregulated"],
+                               order=["Upregulated", "Downregulated", "No significant"],
+                               width=0.5)
 
     # Adding count and percentage to the barplot
     total = len(data["significance"])  # Total count
@@ -380,13 +378,11 @@ def mk_bar_plot(data: pd.DataFrame,
     plt.xlabel("Differentially expressed genes", size=10)
     plt.ylabel("", size=10)
 
-    title = (
-            "Adjusted p-value < "
-            + str(padj_threshold)
-            + "\nFold Change >= |"
-            + str(foldchange_threshold)
-            + "|"
-            )
+    title = ("Adjusted p-value < "
+             + str(padj_threshold)
+             + "\nFold Change >= |"
+             + str(foldchange_threshold)
+             + "|")
     count_plot.set_title(title)
 
     fig = count_plot.get_figure()
@@ -402,15 +398,13 @@ def mk_bar_plot(data: pd.DataFrame,
     plt.close()
 
 
-def mk_volcano_plot(
-        data: pd.DataFrame,
-        log2_fold_change_column_name: str,
-        padj_column_name: str,
-        foldchange_threshold: float,
-        padj_threshold: float,
-        output_directory: str,
-        plot_formats: list[str],
-        ):
+def mk_volcano_plot(data: pd.DataFrame,
+                    log2_fold_change_column_name: str,
+                    padj_column_name: str,
+                    foldchange_threshold: float,
+                    padj_threshold: float,
+                    output_directory: str,
+                    plot_formats: list[str]) -> None:
     """
     Generate a volcano plot with specified thresholds.
 
@@ -456,16 +450,15 @@ def mk_volcano_plot(
     plt.figure(figsize=(6,7))
 
     # Creating the plot
-    volcano = sns.scatterplot(
-            data=data,
-            s=15,
-            linewidth=0.1,
-            x=log2_fold_change_column_name,
-            y="-log10(padj)",
-            hue="significance",
-            hue_order=[down_newname, no_sig_newname, up_newname],
-            palette=("cornflowerblue", "silver", "indianred"),
-            )
+    volcano = sns.scatterplot(data=data,
+                              s=15,
+                              linewidth=0.1,
+                              x=log2_fold_change_column_name,
+                              y="-log10(padj)",
+                              hue="significance",
+                              hue_order=[down_newname, no_sig_newname, up_newname],
+                              palette=("cornflowerblue", "silver", "indianred"),
+                              )
 
     # Add lines that will better ilustrate the choosen thresholds:
     # zorder: add to the bottom (all other elements will be added in front)
@@ -482,13 +475,11 @@ def mk_volcano_plot(
     volcano.spines["right"].set_visible(False)
 
     # Creating the legend title.
-    legend_title = (
-            "Adjusted p-value < "
-            + str(padj_threshold)
-            + "\nFold Change >= |"
-            + str(foldchange_threshold)
-            + "|"
-            )
+    legend_title = ("Adjusted p-value < "
+                    + str(padj_threshold)
+                    + "\nFold Change >= |"
+                    + str(foldchange_threshold)
+                    + "|")
     volcano.legend(title=legend_title)
 
     # Label for x axis
