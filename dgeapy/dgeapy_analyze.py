@@ -3,20 +3,15 @@
 """
 Script : dgeapy_analyze.py
 Description: Perform Differential Gene Expression Analysis (DGEA) by identifying
-the differentially expressed genes from a dataframe. Takes as input a table
-in CSV, TSV, or XLSX format containing gene expression data. The script
-applies thresholds for adjusted p-values and fold changes to identify
-significant gene expression changes. Any  NaN values in the specified columns
-are detected and removed from the analysis. Duplicated indexes are
-also removed from the analysis by default.
+the differentially expressed genes from a dataframe. 
 
-Generates bar plots and volcano plots to visualize the results.
+Takes as input a table in CSV, TSV, or XLSX format containing gene expression data.
+The script performs some data validations and then applies thresholds for
+adjusted p-values and fold changes to identify the differentially expressed genes.
 
-A directory named "dgeapy_output" will be created in the current working
-directory including:
-    1. The modified dataframe with new columns for fold change
-       and gene regulation.
-    2. The generated plots. One bar plot and one volcano plot.
+Generates output tables containing the differentially expressed genes, the
+upregulated genes, and the downregulated genes. Also generates a bar and a
+volcano plot to visualize the results.
 
 Author : Joan Lluis Pons Ramon
 Email : joanlluispons@gmail.com
@@ -31,10 +26,10 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from dgeapy_utils import (__version__, Color, TermMsg, CustomHelpFormatter, eprint)
 from dgeapy_errors import (InvalidArgumentError, FileNotFoundError,
                            MissingArgumentError, UnsupportedFileFormatError,
                            RequiredColumnNotFoundError, NanValuesInIndexColumnError)
+from dgeapy_utils import (__version__, Color, TermMsg, CustomHelpFormatter, eprint)
 
 
 # Default values. Can be changed with command line arguments.

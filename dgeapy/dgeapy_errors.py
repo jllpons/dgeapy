@@ -1,3 +1,10 @@
+"""
+This module contains the custom errors used in the dgeapy package.
+
+Author : Joan Lluis Pons Ramon
+Email : joanlluispons@gmail.com
+"""
+
 from dgeapy_utils import Color, TermMsg
 
 
