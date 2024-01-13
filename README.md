@@ -104,7 +104,8 @@ python dgeapy/dgeapy.py analyze example/data/GSE206442.xlsx -o example/analyze_o
 
 Output tables and figures can be found in `example/analyze_output`.
 
-<img src="file/analyze_output/barplot.png" width="200" >
+<img src="example/analyze_output/barplot.png" width="500" >
+<img src="example/analyze_output/volcano.png" width="500" >
 
 ![**Figure 2**: Volcano plot generated using the exmple data.](example/analyze_output/volcano.png){width:200px}
 
