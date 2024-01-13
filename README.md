@@ -104,8 +104,8 @@ python dgeapy/dgeapy.py analyze example/data/GSE206442.xlsx -o example/analyze_o
 
 Output tables and figures can be found in `example/analyze_output`.
 
-<img src="example/analyze_output/barplot.png" height="400" >
-<img src="example/analyze_output/volcano.png" width="700" >
+<img src="example/analyze_output/barplot.png" height="350" >
+<img src="example/analyze_output/volcano.png" width="500" >
 
 Example data can be downloaded from [GSE206442](<https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE206442&format=file&file=GSE206442%5FGIBERT%5F01%5Fnew%5Fannot%5Fwo%5Foutlier%5FSTAT%5Fvs%5FLOG%5Fresults%2Exlsx>).
 
@@ -153,7 +153,7 @@ Results can be found in `example/intersect3_output`
 
 Example of a generated Venn Diagram: 
 
-<img src="example/intersect3_output/volcano.png" width="700" >
+<img src="example/intersect3_output/venn3_unweighted.png" width="500" >
 
 Intersection analysis between 4 files:
 
