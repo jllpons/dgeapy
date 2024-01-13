@@ -104,7 +104,7 @@ python dgeapy/dgeapy.py analyze example/data/GSE206442.xlsx -o example/analyze_o
 
 Output tables and figures can be found in `example/analyze_output`.
 
-<img src="example/analyze_output/barplot.png" width="500" >
+<img src="example/analyze_output/barplot.png" height="300" >
 <img src="example/analyze_output/volcano.png" width="500" >
 
 ![**Figure 2**: Volcano plot generated using the exmple data.](example/analyze_output/volcano.png){width:200px}
@@ -155,6 +155,9 @@ Results can be found in `example/intersect3_output`
 
 Example of a generated Venn Diagram: 
 
+<img src="example/intersect3_output/volcano.png" width="500" >
+
+
 ![**Figure 3**: Venn diagram using example
 data](example/intersect3_output/venn3_unweighted.png)
 
@@ -167,6 +170,8 @@ python dgeapy/dgeapy.py intersect -f example/data/condition1.xlsx -f example/dat
 Results can be found in `example/intersect4_output`
 
 Example of a generated UpSet Plot:
+
+<img src="example/intersect4_output/upset.png" width="500" >
 
 ![**Figure 4**: Venn diagram using example
 data](example/intersect4_output/upset.png)
