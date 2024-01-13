@@ -104,9 +104,9 @@ python dgeapy/dgeapy.py analyze example/data/GSE206442.xlsx -o example/analyze_o
 
 Output tables and figures can be found in `example/analyze_output`.
 
-![**Figure 1**: Bar plot generated using the exmple data.](example/analyze_output/barplot.png){width:200px;}
+![**Figure 1**: Bar plot generated using the exmple data.](example/analyze_output/barplot.png){width:200px}
 
-![**Figure 2**: Volcano plot generated using the exmple data.](example/analyze_output/volcano.png)
+![**Figure 2**: Volcano plot generated using the exmple data.](example/analyze_output/volcano.png){width:200px}
 
 Example data can be downloaded from [GSE206442](<https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE206442&format=file&file=GSE206442%5FGIBERT%5F01%5Fnew%5Fannot%5Fwo%5Foutlier%5FSTAT%5Fvs%5FLOG%5Fresults%2Exlsx>).
 
