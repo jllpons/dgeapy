@@ -104,10 +104,8 @@ python dgeapy/dgeapy.py analyze example/data/GSE206442.xlsx -o example/analyze_o
 
 Output tables and figures can be found in `example/analyze_output`.
 
-<img src="example/analyze_output/barplot.png" height="300" >
-<img src="example/analyze_output/volcano.png" width="500" >
-
-![**Figure 2**: Volcano plot generated using the exmple data.](example/analyze_output/volcano.png){width:200px}
+<img src="example/analyze_output/barplot.png" height="400" >
+<img src="example/analyze_output/volcano.png" width="700" >
 
 Example data can be downloaded from [GSE206442](<https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE206442&format=file&file=GSE206442%5FGIBERT%5F01%5Fnew%5Fannot%5Fwo%5Foutlier%5FSTAT%5Fvs%5FLOG%5Fresults%2Exlsx>).
 
@@ -155,11 +153,7 @@ Results can be found in `example/intersect3_output`
 
 Example of a generated Venn Diagram: 
 
-<img src="example/intersect3_output/volcano.png" width="500" >
-
-
-![**Figure 3**: Venn diagram using example
-data](example/intersect3_output/venn3_unweighted.png)
+<img src="example/intersect3_output/volcano.png" width="700" >
 
 Intersection analysis between 4 files:
 
@@ -171,7 +165,4 @@ Results can be found in `example/intersect4_output`
 
 Example of a generated UpSet Plot:
 
-<img src="example/intersect4_output/upset.png" width="500" >
-
-![**Figure 4**: Venn diagram using example
-data](example/intersect4_output/upset.png)
+<img src="example/intersect4_output/upset.png" width="700" >
