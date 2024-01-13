@@ -12,8 +12,7 @@ import os
 import sys
 import subprocess
 
-from dgeapy_utils import (__author__, __email__, __version__,
-                          Color, TermMsg)
+from dgeapy_utils import ( __version__, Color, TermMsg, eprint)
 
 
 def main():
@@ -41,8 +40,8 @@ For more information, see <https://github.com/jllpons/dgeapy>.
 
     arg_len = len(sys.argv)
     if arg_len == 1:
-        print(description, file=sys.stderr)
-        print(f"{TermMsg.ERROR}: no command was given.", file=sys.stderr)
+        eprint(description)
+        eprint(f"{TermMsg.ERROR}: no command was given.")
         sys.exit(1)
 
     elif arg_len > 1:
@@ -50,11 +49,11 @@ For more information, see <https://github.com/jllpons/dgeapy>.
         dgeapy_path = os.path.dirname(os.path.realpath(__file__))
 
         if cmd == '-h' or cmd == '--help':
-            print(description, file=sys.stderr)
+            print(description)
             sys.exit(0)
 
         elif cmd == '-V' or cmd == '--version':
-            print(f"dgeapy version {Color.YELLOW}{__version__}{Color.RESET}", file=sys.stderr)
+            print(f"dgeapy version {Color.YELLOW}{__version__}{Color.RESET}")
             sys.exit(0)
 
         elif cmd == 'analyze':
@@ -66,8 +65,8 @@ For more information, see <https://github.com/jllpons/dgeapy>.
             subprocess.run(subcmd)
 
         else:
-            print(description, file=sys.stderr)
-            print(f"{TermMsg.ERROR}: unrecognized command '{Color.YELLOW}{cmd}{Color.RESET}'.", file=sys.stderr)
+            eprint(description)
+            eprint(f"{TermMsg.ERROR}: unrecognized command '{Color.YELLOW}{cmd}{Color.RESET}'.")
             sys.exit(1)
 
 

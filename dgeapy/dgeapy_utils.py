@@ -2,13 +2,18 @@
 
 """
 Different utilities for dgeapy.
+
+Author : Joan Lluis Pons Ramon
+Email : joanlluispons@gmail.com
 """
 
 import argparse
+import sys
+import re
 
-__author__ = "Joan Lluis Pons Ramon"
-__email__ = "joanlluis@gmail.com"
+
 __version__ = "0.0.0"
+
 
 class Color:
     """
@@ -24,6 +29,7 @@ class Color:
 
     RESET = "\033[0m"
 
+
 class TermMsg:
     """
     Templates for terminal messages.
@@ -32,6 +38,24 @@ class TermMsg:
     ERROR = f"[dgeapy] {Color.RED}Error{Color.RESET}"
     WARNING = f"[dgeapy] {Color.RED}Warning{Color.RESET}"
     INFO = f"[dgeapy] {Color.GREEN}Info{Color.RESET}"
+
+
+def remove_color_codes(string: str) -> str:
+    """
+    Remove color codes from a string.
+    """
+    return re.sub(r"\033\[[0-9;]*m", "", string)
+
+
+def eprint(*args, **kwargs):
+    """
+    Print to stderr. If stderr is not attached to an interactive terminal,
+    remove color codes.
+    """
+    if sys.stderr.isatty():
+        print(*args, file=sys.stderr, **kwargs)
+    else:
+        print(*[remove_color_codes(arg) for arg in args], file=sys.stderr, **kwargs)
 
 
 # <https://stackoverflow.com/questions/18275023/dont-show-long-options-twice-in-print-help-from-argparse>
