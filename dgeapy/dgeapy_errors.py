@@ -57,16 +57,16 @@ class MissingArgumentError(Exception):
 class UnsupportedFileFormatError(Exception):
     """Raised when a file format is not supported."""
 
-    def __init__(self, file_format,
+    def __init__(self, file_name,
                  message=f"{TermMsg.ERROR}: File format not supported", closure=""):
-        self.file_format = file_format
+        self.file_name = file_name
         self.message = message
         self.closure = closure
 
         super().__init__(self.message)
 
     def __str__(self):
-        return (f"{self.message}: {Color.YELLOW}{self.file_format}{Color.RESET}"
+        return (f"{self.message}: {Color.YELLOW}{self.file_name}{Color.RESET}"
                 f"{self.closure}")
 
 
@@ -94,13 +94,32 @@ class NanValuesInIndexColumnError(Exception):
     """Raised when there are NaN values in the index column."""
 
     def __init__(self, message=f"{TermMsg.ERROR}: NaN values in index column",
-                 closure=""):
+                 file_index=None, closure=""):
         self.message = message
+        self.file_index = file_index
         self.closure = closure
 
         super().__init__(self.message)
 
     def __str__(self):
-        return f"{self.message}{self.closure}"
+        if self.file_index is None:
+            return f"{self.message}{self.closure}"
+        return f"{self.message} on table number '{Color.YELLOW}{self.file_index}{Color.RESET}'"
+
+
+class DuplicatesInIndexColumnError(Exception):
+    """Raised when there are duplicated values in the index column."""
+
+    def __init__(self, message=f"{TermMsg.ERROR}: Duplicated values in index column",
+                 file_index=None, duplicated_indxs=None):
+        self.message = message
+        self.file_index = file_index
+        self.duplicated_indxs = duplicated_indxs
+
+        super().__init__(self.message)
+
+    def __str__(self):
+        return (f"{self.message} of table number '{Color.YELLOW}{self.file_index}{Color.RESET}'"
+                f", indices are {Color.YELLOW}{self.duplicated_indxs}{Color.RESET}")
 
 
