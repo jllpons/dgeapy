@@ -56,7 +56,7 @@ Options:
 Examples:
     python dgeapy.py analyze -h
     python dgeapy.py analyze <mygenes.csv> -f 2.0 -p 0.01
-    python dgeapy.py intersect -f mutA.csv -f mutB.csv -n "Mutant A" -n "Mutant B" -i gene_id
+    python dgeapy.py intersect -f <mutA.csv> -f <mutB.csv> -n "Mutant A" -n "Mutant B" -i gene_id
 ```
 
 ### dgeapy analyze
