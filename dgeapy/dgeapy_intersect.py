@@ -256,7 +256,6 @@ def read_and_validate_tables(args: argparse.Namespace) -> list[pd.DataFrame]:
                 # Actually excluding matching indexes
                 tables[idx] = tbl[~has_pattern]
 
-
     return tables
 
 
@@ -274,7 +273,7 @@ def generate_output(args: argparse.Namespace, tables: list[pd.DataFrame]) -> Non
 
         Example:
         >>> obtain_all_possible_combinations(3)
-        ['000', '001', '010', '011', '100', '101', '110', '111']
+        ['001', '010', '011', '100', '101', '110', '111']
         """
 
         combinations = []
